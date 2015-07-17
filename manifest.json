@@ -5,11 +5,14 @@
   "description": "A Google Chrome extension that allows users to highlight text and search for music based on the selected text.",
   "version": "1.0",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["jquery-2.1.4.min.js", "background.js"]
   },
+  "web_accessible_resources": [
+        "stylesheet.css"
+    ],
   "permissions": [
-   "activeTab",
-   "contextMenus",
-   "background"
+     "activeTab",
+     "contextMenus",
+     "background"
    ]
 }
