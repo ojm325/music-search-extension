@@ -4,7 +4,12 @@ $(function(){
 
   chrome.contextMenus.onClicked.addListener(function(info, tab) {
       if (tab) {
-          var code = [
+          var containerRemove = 
+            "if ($('#musicSearchContainer').length) { "
+                + "$('#musicSearchContainer').remove();"
+                + "}";
+
+          var containerAdd = [
               'var d = document.createElement("div");',
               "d.setAttribute('style', '"
                   + "background-color: blue; "
@@ -20,7 +25,10 @@ $(function(){
               'document.body.appendChild(d);'
           ].join("\n");
 
-          chrome.tabs.executeScript(tab.id, { code: code });
+          var selection = info.selectionText;
+
+          chrome.tabs.executeScript(tab.id, { code: containerRemove });
+          chrome.tabs.executeScript(tab.id, { code: containerAdd });
           
           chrome.tabs.executeScript(tab.id, { file: "jquery-2.1.4.min.js" }, function(){});
           chrome.tabs.executeScript(tab.id, { file: "jquery-ui.js" }, function(){});
