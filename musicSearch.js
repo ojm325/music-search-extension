@@ -1,19 +1,31 @@
 $(function(){
-    $( "#musicSearchContainer" ).draggable();
-    $('<div>', {id:'searchedTerm'}).appendTo('#musicSearchContainer');
 
-    var sel = window.getSelection();
-    var selectedText = sel.toString();
+    var audioObj = null;
 
-    $('<h2>').appendTo('#searchedTerm').append(selectedText);
-    //$('<h2>').appendTo('#searchedTerm').append("Swans");
+    createUI();
 
-    searchForAlbums(selectedText);
+    function createUI(){
+        $( "#musicSearchContainer" ).draggable();
 
-    function searchForAlbums(query){
+        $('<div>', {id:'closeMusicSearchContainer'}).appendTo('#musicSearchContainer');
+        $( "#closeMusicSearchContainer" ).text("Close");
+        $( "#closeMusicSearchContainer" ).click(function() {
+            $('#musicSearchContainer').remove();
+        });
+        $('<div>', {id:'searchedTerm'}).appendTo('#musicSearchContainer');
+
+        var sel = window.getSelection();
+        var selectedText = sel.toString();
+
+        $('<h2>').appendTo('#searchedTerm').append("You searched for: " +selectedText);
 
         $('<div>', {id:'albumTitle'}).appendTo('#musicSearchContainer');
         $('<div>', {id:'albumList'}).appendTo('#musicSearchContainer');
+
+        searchForAlbums(selectedText);
+    }
+
+    function searchForAlbums(query){
 
     	$.ajax({
             url: 'https://api.spotify.com/v1/search',
@@ -22,32 +34,35 @@ $(function(){
                 type: 'album'
             },
             success: function (response) {
-    			$.each(response["albums"]["items"], function(key, value){
-    				//document.write("Check console logs for response");
-    			    console.log(key, value);
+                if(response["albums"]["items"].length == 0){
+                    $("#albumTitle").text("No Results Found.");
+                }else{
+        			$.each(response["albums"]["items"], function(key, value){
+        			    console.log(key, value);
 
-                    var album = response["albums"]["items"][key];
-                    var albumId = response["albums"]["items"][key]["id"];
+                        var album = response["albums"]["items"][key];
+                        var albumId = response["albums"]["items"][key]["id"];
 
-                    var container = $('<div>', 
-                        {
-                            class:'album',
-                            id: albumId
+                        var container = $('<div>', 
+                            {
+                                class:'album',
+                                id: albumId
+                            });
+                        container.appendTo('#albumList');
+
+                        $('<h3>').appendTo('#'+albumId).append(album["name"]);
+                        $('<img />', {
+                            src: album['images'][1]['url'],
+                        }).appendTo('#'+albumId);
+
+                        $( ".album" ).hover(function() {
+                            $( '#albumTitle' ).text("HI!");
+                        }, function() {
+                            $( '#albumTitle' ).text("");
                         });
-                    container.appendTo('#albumList');
 
-                    $('<h3>').appendTo('#'+albumId).append(album["name"]);
-                    $('<img />', {
-                        src: album['images'][1]['url'],
-                    }).appendTo('#'+albumId);
-
-                    $( ".album" ).hover(function() {
-                        $( '#albumTitle' ).text("HI!");
-                    }, function() {
-                        $( '#albumTitle' ).text("");
-                    });
-
-    			});
+        			});
+                }
             }
         });
     }

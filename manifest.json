@@ -9,8 +9,7 @@
     "persistent": true
   },
   "web_accessible_resources": [
-        "stylesheet.css",
-        "musicSearch.js"
+        "stylesheet.css"
     ],
   "permissions": [
      "activeTab",
