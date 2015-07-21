@@ -1,8 +1,18 @@
 $(function(){
 
-    var audioObj = null;
+    var audioObj = null,
+    musicEventClass = 'playing';
 
     createUI();
+
+    var fetchTracks = function (albumId, callback) {
+        $.ajax({
+            url: 'https://api.spotify.com/v1/albums/' + albumId,
+            success: function (response) {
+                callback(response);
+            }
+        });
+    };
 
     function createUI(){
         $( "#musicSearchContainer" ).draggable();
@@ -11,6 +21,11 @@ $(function(){
         $( "#closeMusicSearchContainer" ).text("Close");
         $( "#closeMusicSearchContainer" ).click(function() {
             $('#musicSearchContainer').remove();
+
+            if (audioObj) {
+                audioObj.pause();
+            }
+
         });
         $('<div>', {id:'searchedTerm'}).appendTo('#musicSearchContainer');
 
@@ -53,6 +68,7 @@ $(function(){
                         $('<h3>').appendTo('#'+albumId).append(album["name"]);
                         $('<img />', {
                             src: album['images'][1]['url'],
+                            class:"albumCover"
                         }).appendTo('#'+albumId);
 
                         $( ".album" ).hover(function() {
@@ -61,10 +77,34 @@ $(function(){
                             $( '#albumTitle' ).text("");
                         });
 
+                        $('#'+albumId).click(function (e) {
+                            var target = e.target;
+
+                            if (target.classList.contains(musicEventClass)) {
+                                audioObj.pause();
+                            } else {
+                                if (audioObj) {
+                                    audioObj.pause();
+                                }
+                                fetchTracks(albumId, function (data) {
+                                    audioObj = new Audio(data.tracks.items[0].preview_url);
+
+                                    audioObj.play();
+
+                                    $(target).addClass(musicEventClass)
+
+                                    audioObj.addEventListener('ended', function () {
+                                        $(target).removeClass(musicEventClass)
+                                    });
+                                    audioObj.addEventListener('pause', function () {
+                                        $(target).removeClass(musicEventClass)
+                                    });
+                                });
+                            }
+                        });
         			});
                 }
             }
         });
     }
-
 });
