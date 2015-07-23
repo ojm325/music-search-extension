@@ -65,14 +65,15 @@ $(function(){
                             });
                         container.appendTo('#albumList');
 
-                        $('<h3>').appendTo('#'+albumId).append(album["name"]);
+                        //$('<h3>').appendTo('#'+albumId).append(album["name"]);
                         $('<img />', {
-                            src: album['images'][1]['url'],
-                            class:"albumCover"
+                            src: album['images'][2]['url'],
+                            class:"albumCover",
+                            id: album["name"]
                         }).appendTo('#'+albumId);
 
                         $( ".album" ).hover(function() {
-                            $( '#albumTitle' ).text("HI!");
+                            $( '#albumTitle' ).text($(this).find('img').attr('id'));
                         }, function() {
                             $( '#albumTitle' ).text("");
                         });
