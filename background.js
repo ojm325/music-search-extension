@@ -16,12 +16,13 @@ $(function(){
           ].join("\n");
 
           var selection = info.selectionText;
-
-          chrome.tabs.executeScript(tab.id, { code: containerRemove });
-          chrome.tabs.executeScript(tab.id, { code: containerAdd });
           
           chrome.tabs.executeScript(tab.id, { file: "jquery-2.1.4.min.js" }, function(){});
           chrome.tabs.executeScript(tab.id, { file: "jquery-ui.js" }, function(){});
+
+          chrome.tabs.executeScript(tab.id, { code: containerRemove });
+          chrome.tabs.executeScript(tab.id, { code: containerAdd });
+
           chrome.tabs.executeScript(tab.id, {file: "musicSearch.js"}, function() {
           });
       }

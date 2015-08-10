@@ -14,6 +14,27 @@ $(function(){
         });
     };
 
+    function getWikiPage(query){
+        //var cleanedQuery = query.replace(" ", "_");
+        //console.log(cleanedQuery);
+
+        $.ajax({
+            url: "https://en.wikipedia.org/wiki/"+query,
+            dataType: 'text',
+            success: function(data) {
+
+                var elements = $(data).find('#mw-content-text p').slice(0, 2).text();
+
+                console.log("WORD " +elements);
+
+                $('<div>', {id:'wikiInfo'}).appendTo('#musicSearchContainer').text(elements);
+
+            }
+        });
+
+
+    }
+
     function createUI(){
         $( "#musicSearchContainer" ).draggable();
 
@@ -38,6 +59,7 @@ $(function(){
         $('<div>', {id:'albumList'}).appendTo('#musicSearchContainer');
 
         searchForAlbums(selectedText);
+        getWikiPage(selectedText);
     }
 
     function searchForAlbums(query){
