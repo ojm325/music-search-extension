@@ -14,30 +14,24 @@ $(function(){
         });
     };
 
-    function getWikiPage(query){
-        //var cleanedQuery = query.replace(" ", "_");
-        //console.log(cleanedQuery);
-
+    var getWikiPage = function (query, callback) {
         $.ajax({
             url: "https://en.wikipedia.org/wiki/"+query,
             dataType: 'text',
-            success: function(data) {
-
-                var elements = $(data).find('#mw-content-text p').slice(0, 2).text();
-
-                console.log("WORD " +elements);
-
-                $('<div>', {id:'wikiInfo'}).appendTo('#musicSearchContainer').text(elements);
-
+            success: function (response) {
+                callback(response);
             }
         });
-
-
-    }
+    };
 
     function createUI(){
+        // Get the text that was highlighted
+        var sel = window.getSelection();
+        var selectedText = sel.toString();
+
         $( "#musicSearchContainer" ).draggable();
 
+        // Close Button and Functionality
         $('<div>', {id:'closeMusicSearchContainer'}).appendTo('#musicSearchContainer');
         $( "#closeMusicSearchContainer" ).text("Close");
         $( "#closeMusicSearchContainer" ).click(function() {
@@ -48,18 +42,29 @@ $(function(){
             }
 
         });
+
+        // Display the term that the user highlighted in the extension's window
         $('<div>', {id:'searchedTerm'}).appendTo('#musicSearchContainer');
-
-        var sel = window.getSelection();
-        var selectedText = sel.toString();
-
         $('<h2>').appendTo('#searchedTerm').append("You searched for: " +selectedText);
 
+        // Display album information
+        $('<div>', {id:'musicSearchContainer_bottom'}).appendTo('#musicSearchContainer');
         $('<div>', {id:'albumTitle'}).appendTo('#musicSearchContainer');
-        $('<div>', {id:'albumList'}).appendTo('#musicSearchContainer');
-
+        $('<div>', {id:'albumList'}).appendTo('#musicSearchContainer_bottom');
         searchForAlbums(selectedText);
-        getWikiPage(selectedText);
+
+        // Display details of the highlighted term from its Wikipedia article
+        $.ajax({
+            success: function(response){
+                getWikiPage(selectedText, function (data) {
+                    var elements = $(data).find('#mw-content-text p').slice(0, 2).text();
+                    //console.log("WIKI " +elements);
+
+                    $('<div>', {id:'wikiInfo'}).appendTo('#musicSearchContainer_bottom').text(elements);
+                });
+            }
+        });
+
     }
 
     function searchForAlbums(query){

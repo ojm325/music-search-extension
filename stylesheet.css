@@ -2,7 +2,7 @@
 	font-family: "Helvetica", sans-serif;
 	background-color: #d34331;
     width: 566px;
-	height: 150px;
+	max-height: 250px;
 	position: fixed;
 	top: 70px;
 	left: 30px;
@@ -10,8 +10,15 @@
 	box-shadow: 2px 2px 3px grey;
 	color: #EAE9BD;
 }
+#musicSearchContainer_bottom{
+	background-color: #FEFFED;
+	color: #2C2E2C;
+	position: relative;
+	padding: 10px;
+	padding-left:;
+}
 
-#searchedTerm{
+#searchedTerm, #albumTitle{
 	position: relative;
 	text-align: center;
 	overflow: hidden;
@@ -21,11 +28,16 @@
 	position: relative;
 	float: right;
 	width: 288px;
-	height: 120px;
+	max-height: 120px;
 	overflow: auto;
 }
 
 .album{
 	display: inline-block;
 	padding: 1px ;
+}
+
+#wikiInfo{
+	overflow: auto;
+	max-height: 120px;
 }
